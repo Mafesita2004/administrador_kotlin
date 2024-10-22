@@ -2,6 +2,7 @@ package com.example.etapaproductiva
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -21,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.ColorFilter
 
 
 class MainActivity : ComponentActivity() {
@@ -63,24 +65,26 @@ class MainActivity : ComponentActivity() {
             Image(
                 painter = painterResource(id = R.drawable.logo_etapaproductiva),
                 contentDescription = "Logo Etapa Productiva",
-                modifier = Modifier.size(30.dp)
+                modifier = Modifier.size(40.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
 
             // Textos
             Column {
                 Text(
-                    "Etapa Productiva",
-                    fontSize = 12.sp,
+                    "Etapa\nProductiva",
+                    fontSize = 13.sp,
                     color = Color(0xFF009E00),
-                    fontWeight = FontWeight.Bold
+                    modifier = Modifier
+                        .padding(top = 6.dp) // Ajusta la distancia hacia abajo
+                        .offset(x = (-5).dp) // Desplaza el texto hacia la izquierda
                 )
-                Spacer(modifier = Modifier.height(25.dp)) // Espaciador para bajar el texto "Centro de Comercio y Servicios"
+                Spacer(modifier = Modifier.height(15.dp)) // Espaciador para bajar el texto "Centro de Comercio y Servicios"
                 Text(
                     "Centro de Comercio y Servicios",
                     fontSize = 14.sp,
                     color = Color(0xFF009E00),
-                    modifier = Modifier.padding(start = 0.dp)
+                    modifier = Modifier.offset(x = (-30).dp) // Desplazar 30 dp hacia la izquierda
                 )
             }
 
@@ -108,7 +112,8 @@ class MainActivity : ComponentActivity() {
             Image(
                 painter = painterResource(id = R.drawable.notificaciones_icon),
                 contentDescription = "Notification Icon",
-                modifier = Modifier.size(60.dp)
+                modifier = Modifier.size(60.dp),
+                colorFilter = ColorFilter.tint(Color.White) // Cambia el color a blanco
             )
         }
     }
@@ -122,15 +127,19 @@ class MainActivity : ComponentActivity() {
                 verticalArrangement = Arrangement.spacedBy(16.dp) // Espaciado entre botones
             ) {
                 ActionButton("Instructores", R.drawable.instructor_icono) {
+                    Log.d("MainActivity", "Instructores button clicked")
                     startActivity(Intent(this@MainActivity, InstructorActivity::class.java))
                 }
                 ActionButton("Aprendices", R.drawable.aprendiz_icono) {
+                    Log.d("MainActivity", "Aprendices button clicked")
                     startActivity(Intent(this@MainActivity, ApprenticeActivity::class.java))
                 }
                 ActionButton("Gráficas", R.drawable.graficas) {
+                    Log.d("MainActivity", "Gráficas button clicked")
                     startActivity(Intent(this@MainActivity, GraphicActivity::class.java))
                 }
                 ActionButton("Plantillas", R.drawable.template_icon) {
+                    Log.d("MainActivity", "Plantillas button clicked")
                     startActivity(Intent(this@MainActivity, TemplateActivity::class.java))
                 }
             }

@@ -23,6 +23,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".InstructorActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ApprenticeActivity"
+            android:exported="true" />
+        <activity
+            android:name=".GraphicActivity"
+            android:exported="true" />
+        <activity
+            android:name=".TemplateActivity"
+            android:exported="true" />
     </application>
 
 </manifest>
