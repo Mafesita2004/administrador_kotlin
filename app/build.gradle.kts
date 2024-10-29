@@ -50,25 +50,51 @@ android {
 }
 
 dependencies {
-
+    // AndroidX Libraries
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
+
+    // Jetpack Compose
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation ("androidx.compose.ui:ui:1.3.0")
-    implementation ("androidx.compose.material:material:1.3.0")
-    implementation ("androidx.activity:activity-compose:1.6.0")
-    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
-    implementation ("androidx.compose.ui:ui-tooling-preview:1.3.0")
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
+    implementation("androidx.compose.ui:ui:1.5.1")
+    implementation("androidx.compose.material:material:1.5.1")
+    implementation("androidx.compose.material:material-icons-extended:1.5.1") // Para íconos adicionales
+    implementation("androidx.compose.ui:ui-tooling-preview:1.5.1")
+    implementation("androidx.compose.runtime:runtime:1.5.1") // Para el uso de runtime
+    implementation("androidx.compose.material3:material3:1.2.0")
+    implementation ("androidx.compose.ui:ui:1.4.0")
+    implementation ("androidx.compose.material:material:1.4.0")
+    implementation ("androidx.compose.ui:ui-tooling:1.4.0")
+    implementation ("androidx.activity:activity-compose:1.7.0")
+    implementation ("androidx.compose.ui:ui:1.4.0") // Cambia la versión según tu setup
+    implementation ("androidx.compose.material3:material3:1.0.1") // Cambia según tu setup
+    implementation ("androidx.compose.ui:ui-tooling-preview:1.4.0")
+    implementation ("androidx.activity:activity-compose:1.7.0")
+    // Material3
     implementation(libs.androidx.material3)
+
+    // Navegación
+    implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(libs.androidx.navigation.compose)
+
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0") // Asegúrate de usar una versión compatible
+
+    // Pruebas
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+
+    // Debugging
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // Para trabajar con imágenes y contenido escalable
+    implementation("androidx.compose.foundation:foundation:1.5.1")
+
+    // Para la implementación de DropdownMenu
+    implementation("androidx.compose.ui:ui-util:1.5.1")
 }

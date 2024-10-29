@@ -6,58 +6,69 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.etapaproductiva.ui.theme.EtapaProductivaTheme
 
-class GraphicActivity : ComponentActivity() {
+class AgregarInstructorActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             EtapaProductivaTheme {
-                GraphicScreen()
+                val navController = rememberNavController()
+                NavHost(navController = navController, startDestination = "agregar_instructor") {
+                    composable("agregar_instructor") { AgregarInstructorScreen(navController) }
+                }
             }
         }
     }
 
     @Composable
-    fun GraphicScreen() {
-        Scaffold(
-            // Elimina el topBar para remover la barra superior
-            content = { paddingValues ->
-                Column(modifier = Modifier.padding(paddingValues)) {
-                    HeaderSection()
-                    NotificationBar()
-                    MainContent()
-                }
-            }
-        )
-    }
-    @Composable
-    fun TopBar() {
-        TopAppBar(
-            title = {
-                Text("Etapa Productiva", fontSize = 18.sp)
-            },
-            backgroundColor = Color(0xFF009e00),
-            contentColor = Color.White
-        )
+    fun AgregarInstructorScreen(navController: NavController) {
+        val scrollState = rememberScrollState() // Crear estado de desplazamiento
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+
+                .verticalScroll(scrollState) // Habilitar desplazamiento
+        ) {
+            HeaderSection()
+            Spacer(modifier = Modifier.height(8.dp))
+
+            NotificationBar() // Mostrar la barra de notificación
+
+            Spacer(modifier = Modifier.height(16.dp))
+            InstructorForm()
+            Spacer(modifier = Modifier.height(16.dp))
+            ActionButtons(navController)
+        }
     }
 
     @Composable
@@ -66,7 +77,6 @@ class GraphicActivity : ComponentActivity() {
             modifier = Modifier.padding(0.dp),
             verticalAlignment = Alignment.Top
         ) {
-            // Logo SENA
             Image(
                 painter = painterResource(id = R.drawable.logo_sena),
                 contentDescription = "Logo SENA",
@@ -74,7 +84,6 @@ class GraphicActivity : ComponentActivity() {
             )
             Spacer(modifier = Modifier.width(10.dp))
 
-            // Logo Etapa Productiva
             Image(
                 painter = painterResource(id = R.drawable.logo_etapaproductiva),
                 contentDescription = "Logo Etapa Productiva",
@@ -82,12 +91,11 @@ class GraphicActivity : ComponentActivity() {
             )
             Spacer(modifier = Modifier.width(8.dp))
 
-            // Textos
             Column {
                 Text(
                     "Etapa\nProductiva",
                     fontSize = 13.sp,
-                    color = Color(0xFF009E00),
+                    color = Color(0xFF009E00), // Verde
                     modifier = Modifier
                         .padding(top = 6.dp)
                         .offset(x = (-5).dp)
@@ -96,18 +104,16 @@ class GraphicActivity : ComponentActivity() {
                 Text(
                     "Centro de Comercio y Servicios",
                     fontSize = 14.sp,
-                    color = Color(0xFF009E00),
+                    color = Color(0xFF009E00), // Verde
                     modifier = Modifier.offset(x = (-30).dp)
                 )
             }
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // Icono de usuario
             UserIcon()
         }
     }
-
     @Composable
     fun UserIcon() {
         var expanded by remember { mutableStateOf(false) }
@@ -189,7 +195,6 @@ class GraphicActivity : ComponentActivity() {
         }
     }
 
-
     @Composable
     fun NotificationBar() {
         // Obtén el contexto actual
@@ -218,17 +223,93 @@ class GraphicActivity : ComponentActivity() {
         }
     }
 
+    @Composable
+    fun InstructorForm() {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .background(Color.White, shape = MaterialTheme.shapes.medium) // Fondo gris
+                .border(
+                    3.dp,
+                    Brush.verticalGradient(listOf(Color.Gray.copy(alpha = 0.5f), Color.Transparent)),
+                    shape = MaterialTheme.shapes.medium
+                )
+                .padding(16.dp) // Padding interno
+        ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                val labels = listOf(
+                    "Nombre", "Apellido", "Cédula", "Correo", "Celular",
+                    "Programa", "Total de horas", "Horas realizadas",
+                    "Fecha de inicio", "Fecha de fin",
+                    "País", "Departamento", "Municipio",
+                    "Barrio", "Dirección"
+                )
+
+                labels.forEach { label ->
+                    Row(
+                        modifier = Modifier
+                            .padding(vertical = 4.dp)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically // Centra verticalmente los elementos
+                    ) {
+                        Text(
+                            text = "$label:",
+                            modifier = Modifier
+                                .weight(1f)
+                                .wrapContentWidth(Alignment.Start) // Alinear a la izquierda
+                        )
+                        TextField(
+                            value = "", // Aquí puedes manejar el estado
+                            onValueChange = {},
+                            modifier = Modifier
+                                .weight(2f)
+                                .height(50.dp)
+                                .padding(horizontal = 2.dp),
+                            placeholder = { Text(text = "Ingrese $label") },
+                            textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center) // Centra el texto en el TextField
+                        )
+                    }
+                }
+            }
+        }
+    }
+
 
     @Composable
-    fun MainContent() {
-        // Aquí agregarías el contenido principal de tu pantalla
+    fun ActionButtons(navController: NavController) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Button(
+                onClick = {
+                    // Lógica de confirmar
+                    navController.navigate("instructor") // Ejemplo de navegación
+                },
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF009E00)) // Color verde
+            ) {
+                Text("Confirmar", color = Color.White) // Texto en blanco
+            }
+
+            Button(
+                onClick = {
+                    // Lógica de cancelar
+                    finish() // Cierra la actividad actual
+                },
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray) // Color rojo para cancelar
+            ) {
+                Text("Cancelar", color = Color.White)  // Texto en blanco
+            }
+        }
     }
 
     @Preview(showBackground = true)
     @Composable
     fun DefaultPreview() {
         EtapaProductivaTheme {
-            GraphicScreen()
+            AgregarInstructorScreen(rememberNavController())
         }
     }
 }

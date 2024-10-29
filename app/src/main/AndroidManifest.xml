@@ -35,6 +35,16 @@
         <activity
             android:name=".TemplateActivity"
             android:exported="true" />
+        <activity android:name=".InstructorPerfilActivity" />
+        <activity android:name=".AgregarInstructorActivity" />
+        <activity android:name=".AprendizPerfilActivity" />
+        <activity android:name=".PerfileActivity" />
+        <activity android:name=".AgregarAprendizActivity" />
+        <activity android:name=".NotificacionesActivity" />
+        <activity android:name=".RedactarActivity" />
+        <activity android:name=".Email" />
+
+
     </application>
 
 </manifest>

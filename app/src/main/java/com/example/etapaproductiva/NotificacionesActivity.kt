@@ -7,8 +7,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -24,9 +26,9 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.ui.text.font.FontWeight
 
-class MainActivity : ComponentActivity() {
-
+class NotificacionesActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -36,19 +38,17 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun MainScreen() {
-        val scrollState = rememberScrollState()
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
-                .verticalScroll(scrollState),
+                .background(Color.White),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             HeaderSection()
             NotificationBar()
-            ButtonGrid()
+            SearchBar()
+            EmailList()
         }
     }
 
@@ -180,172 +180,188 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun NotificationBar() {
-        // Obtén el contexto actual
-        val context = LocalContext.current
-
         Row(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .height(64.dp)
                 .background(Color(0xFF009E00)),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.notificaciones_icon),
-                contentDescription = "Notification Icon",
-                modifier = Modifier
-                    .size(60.dp)
-                    .clickable {
-                        // Navega a la actividad AgregarInstructorActivity
-                        val intent = Intent(context, NotificacionesActivity::class.java)
-                        context.startActivity(intent) // Inicia la nueva actividad
-                    },
-                colorFilter = ColorFilter.tint(Color.White)
-            )
+            // Espacio para futuros elementos de la barra de notificaciones
         }
     }
 
     @Composable
-    fun ButtonGrid() {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                ActionButton("Instructores", R.drawable.instructor_icono) {
-                    Log.d("MainActivity", "Instructores button clicked")
-                    startActivity(Intent(this@MainActivity, InstructorActivity::class.java))
-                }
-                ActionButton("Aprendices", R.drawable.aprendiz_icono) {
-                    Log.d("MainActivity", "Aprendices button clicked")
-                    startActivity(Intent(this@MainActivity, ApprenticeActivity::class.java))
-                }
-                ActionButton("Gráficas", R.drawable.graficas) {
-                    Log.d("MainActivity", "Gráficas button clicked")
-                    startActivity(Intent(this@MainActivity, GraphicActivity::class.java))
-                }
-                PlantillasDropdownButton()
-            }
-        }
-    }
+    fun SearchBar() {
+        var expanded by remember { mutableStateOf(false) }
 
-    @Composable
-    fun PlantillasDropdownButton() {
-        val expanded = remember { mutableStateOf(false) }
-        val subMenuExpanded = remember { mutableStateOf(false) }
+        // Obtén el contexto aquí, en el inicio de la función composable
         val context = LocalContext.current
 
-        Box(
+        Row(
             modifier = Modifier
-                .size(300.dp, 150.dp)
-                .padding(8.dp)
-                .shadow(elevation = 8.dp, shape = RoundedCornerShape(8.dp), clip = false)
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Button(
-                onClick = { expanded.value = !expanded.value },
-                modifier = Modifier.fillMaxSize(),
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
+            // Ícono desplegable a la izquierda del campo de búsqueda
+            Box {
+                IconButton(onClick = { expanded = true }) {
                     Image(
-                        painter = painterResource(id = R.drawable.template_icon),
-                        contentDescription = "Plantillas",
-                        modifier = Modifier.size(40.dp)
+                        painter = painterResource(id = R.drawable.menu1),
+                        contentDescription = "Menu Icon",
+                        modifier = Modifier.size(45.dp)
                     )
-                    Text(text = "Plantillas")
+                }
+
+                // DropdownMenu que se despliega al hacer clic en el ícono
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    DropdownMenuItem(onClick = {
+                        expanded = false
+                        // Acción al seleccionar "Recibidos"
+                    }) {
+                        Text("Recibidos")
+                    }
+                    DropdownMenuItem(onClick = {
+                        expanded = false
+                        // Acción al seleccionar "Enviados"
+                    }) {
+                        Text("Enviados")
+                    }
+                    DropdownMenuItem(onClick = {
+                        expanded = false
+                        // Acción al seleccionar "Papelera"
+                    }) {
+                        Text("Papelera")
+                    }
                 }
             }
 
-            DropdownMenu(
-                expanded = expanded.value,
-                onDismissRequest = { expanded.value = false },
-                modifier = Modifier.width(200.dp)
+            // Campo de búsqueda
+            TextField(
+                value = "",
+                onValueChange = {},
+                placeholder = { Text("Buscar...") },
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 6.dp, end = 6.dp)
+                    .background(Color(0xFFE0E0E0), shape = RoundedCornerShape(2.dp)),
+                shape = RoundedCornerShape(16.dp),
+                colors = TextFieldDefaults.textFieldColors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                )
+            )
+
+            // Botón de redactar
+            IconButton(
+                onClick = {
+                    val intent = Intent(context, RedactarActivity::class.java)
+                    context.startActivity(intent)
+                },
+                modifier = Modifier.size(25.dp)
             ) {
-                DropdownMenuItem(onClick = {
-                    expanded.value = false
-                    context.startActivity(Intent(context, PasantiaActivity::class.java))
-                }) {
-                    Text("Pasantía")
-                }
-                DropdownMenuItem(onClick = {
-                    expanded.value = false
-                    context.startActivity(Intent(context, VinculoLaboralActivity::class.java))
-                }) {
-                    Text("Vínculo Laboral")
-                }
-
-                // Dropdown para Contrato de Aprendizaje con submenú
-                DropdownMenuItem(onClick = {
-                    subMenuExpanded.value = !subMenuExpanded.value
-                }) {
-                    Text("Contrato de Aprendizaje")
-                }
-
-                if (subMenuExpanded.value) {
-                    // Submenú para Contrato de Aprendizaje
-                    DropdownMenuItem(onClick = {
-                        // Acción para ver la plantilla
-                        expanded.value = false
-                        subMenuExpanded.value = false
-                        context.startActivity(Intent(context, VerPlantillaActivity::class.java)) // Abre la actividad para ver la plantilla
-                    }) {
-                        Text("Ver Plantilla")
-                    }
-                    DropdownMenuItem(onClick = {
-                        // Acción para añadir una plantilla
-                        expanded.value = false
-                        subMenuExpanded.value = false
-                        // Aquí podrías agregar la lógica para abrir el diálogo de subida de archivos
-                        // Por ejemplo, puedes usar un launcher de intents para seleccionar un archivo
-                    }) {
-                        Text("+ Añadir Plantilla")
-                    }
-                }
-
-                DropdownMenuItem(onClick = {
-                    expanded.value = false
-                    context.startActivity(Intent(context, UnidadProductivaActivity::class.java))
-                }) {
-                    Text("Unidad Productiva Familiar")
-                }
+                Image(
+                    painter = painterResource(id = R.drawable.mas),
+                    contentDescription = "Redactar Icon",
+                    modifier = Modifier.size(45.dp)
+                )
             }
         }
     }
-
 
     @Composable
-    fun ActionButton(text: String, iconRes: Int, onClick: () -> Unit) {
-        Box(
+    fun EmailList() {
+        Column(
             modifier = Modifier
-                .size(300.dp, 150.dp)
+                .fillMaxWidth()
                 .padding(8.dp)
-                .shadow(elevation = 8.dp, shape = RoundedCornerShape(8.dp), clip = false)
         ) {
-            Button(
-                onClick = onClick,
-                modifier = Modifier.fillMaxSize(),
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Image(
-                        painter = painterResource(id = iconRes),
-                        contentDescription = text,
-                        modifier = Modifier.size(40.dp)
+            LazyColumn {
+                items(7) {
+                    EmailItem(
+                        title = "Título de la Notificación",
+                        subject = "Asunto de la Notificación",
+                        date = "Fecha"
                     )
-                    Text(text = text)
                 }
             }
         }
     }
+
+    @Composable
+    fun EmailItem(title: String, subject: String, date: String) {
+        var snackbarVisible by remember { mutableStateOf(false) }
+
+        // Obtén el contexto actual
+        val context = LocalContext.current
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+                .border(
+                    width = 1.dp,
+                    color = Color.Black,
+                    shape = RoundedCornerShape(2.dp)
+                )
+                .padding(8.dp)
+                .clickable { /* Acción al ver el email */ },
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable(onClick = {
+                        val intent = Intent(context, Email::class.java)
+                        // Puedes pasar datos adicionales a la actividad si lo necesitas
+                        intent.putExtra("EXTRA_SUBJECT", subject)
+                        intent.putExtra("EXTRA_TITLE", title)
+                        intent.putExtra("EXTRA_DATE", date)
+                        context.startActivity(intent)
+                    })
+            ) {
+                Text(title, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                Text(subject, color = Color.Gray, fontSize = 12.sp)
+                Text(date, color = Color.Gray, fontSize = 11.sp)
+            }
+
+            // Coloca aquí la imagen como un botón
+            IconButton(onClick = {
+                snackbarVisible = true // Muestra el snackbar al hacer clic
+            }) {
+                Image(
+                    painter = painterResource(id = R.drawable.papelera),
+                    contentDescription = "Papelería Icon",
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        }
+
+        // Mostrar Snackbar
+        if (snackbarVisible) {
+            Snackbar(
+                backgroundColor = Color.White, // Fondo blanco
+                action = {
+                    Button(
+                        onClick = { snackbarVisible = false },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray) // Botón gris
+                    ) {
+                        Text("Cerrar", color = Color.Black) // Texto negro
+                    }
+                },
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text("Mensaje eliminado", color = Color.Black) // Texto negro para el mensaje
+            }
+        }
+    }
+
 
     @Preview(showBackground = true)
     @Composable
