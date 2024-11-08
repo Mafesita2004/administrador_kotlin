@@ -99,13 +99,9 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun UserIcon() {
         var expanded by remember { mutableStateOf(false) }
-
-        // Obtén el contexto actual
         val context = LocalContext.current
-
-        // Reemplaza estos valores con los datos reales
-        val userName = "Paula Valencia" // Nombre del usuario
-        val userRole = "Administrador" // Rol del usuario
+        val userName = "Paula Valencia"
+        val userRole = "Administrador"
 
         Box(modifier = Modifier.wrapContentSize(Alignment.TopEnd)) {
             Image(
@@ -120,18 +116,13 @@ class MainActivity : ComponentActivity() {
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
-                // Añadir nombre y rol en la parte superior del menú
-                Column(
-                    modifier = Modifier.padding(16.dp) // Espaciado
-                ) {
+                Column(modifier = Modifier.padding(16.dp)) {
                     Text(text = userName, style = MaterialTheme.typography.h6)
                     Text(text = userRole, style = MaterialTheme.typography.body2)
                 }
 
-                // Elementos del menú
                 DropdownMenuItem(onClick = {
                     expanded = false
-                    // Navegar a la actividad de perfil
                     context.startActivity(Intent(context, PerfileActivity::class.java))
                 }) {
                     Text("Ver perfil")
@@ -160,11 +151,9 @@ class MainActivity : ComponentActivity() {
                 }) {
                     Text("Plantillas")
                 }
-
                 DropdownMenuItem(onClick = {
                     expanded = false
                     context.startActivity(Intent(context, ConfiguracionActivity::class.java))
-                    // Acción para configuración
                 }) {
                     Text("Configuración")
                 }
@@ -180,9 +169,7 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun NotificationBar() {
-        // Obtén el contexto actual
         val context = LocalContext.current
-
         Row(
             modifier = Modifier
                 .fillMaxSize()
@@ -197,9 +184,8 @@ class MainActivity : ComponentActivity() {
                 modifier = Modifier
                     .size(60.dp)
                     .clickable {
-                        // Navega a la actividad AgregarInstructorActivity
                         val intent = Intent(context, NotificacionesActivity::class.java)
-                        context.startActivity(intent) // Inicia la nueva actividad
+                        context.startActivity(intent)
                     },
                 colorFilter = ColorFilter.tint(Color.White)
             )
@@ -208,6 +194,7 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun ButtonGrid() {
+        val context = LocalContext.current
         Column(modifier = Modifier.padding(16.dp)) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -215,15 +202,15 @@ class MainActivity : ComponentActivity() {
             ) {
                 ActionButton("Instructores", R.drawable.instructor_icono) {
                     Log.d("MainActivity", "Instructores button clicked")
-                    startActivity(Intent(this@MainActivity, InstructorActivity::class.java))
+                    context.startActivity(Intent(context, InstructorActivity::class.java))
                 }
                 ActionButton("Aprendices", R.drawable.aprendiz_icono) {
                     Log.d("MainActivity", "Aprendices button clicked")
-                    startActivity(Intent(this@MainActivity, ApprenticeActivity::class.java))
+                    context.startActivity(Intent(context, ApprenticeActivity::class.java))
                 }
                 ActionButton("Gráficas", R.drawable.graficas) {
                     Log.d("MainActivity", "Gráficas button clicked")
-                    startActivity(Intent(this@MainActivity, GraphicActivity::class.java))
+                    context.startActivity(Intent(context, GraphicActivity::class.java))
                 }
                 PlantillasDropdownButton()
             }
@@ -279,7 +266,6 @@ class MainActivity : ComponentActivity() {
                     Text("Vínculo Laboral")
                 }
 
-                // Dropdown para Contrato de Aprendizaje con submenú
                 DropdownMenuItem(onClick = {
                     subMenuExpanded.value = !subMenuExpanded.value
                 }) {
@@ -287,21 +273,17 @@ class MainActivity : ComponentActivity() {
                 }
 
                 if (subMenuExpanded.value) {
-                    // Submenú para Contrato de Aprendizaje
                     DropdownMenuItem(onClick = {
-                        // Acción para ver la plantilla
                         expanded.value = false
                         subMenuExpanded.value = false
-                        context.startActivity(Intent(context, VerPlantillaActivity::class.java)) // Abre la actividad para ver la plantilla
+                        context.startActivity(Intent(context, VerPlantillaActivity::class.java))
                     }) {
                         Text("Ver Plantilla")
                     }
                     DropdownMenuItem(onClick = {
-                        // Acción para añadir una plantilla
                         expanded.value = false
                         subMenuExpanded.value = false
-                        // Aquí podrías agregar la lógica para abrir el diálogo de subida de archivos
-                        // Por ejemplo, puedes usar un launcher de intents para seleccionar un archivo
+                        // Añadir lógica para añadir una plantilla
                     }) {
                         Text("+ Añadir Plantilla")
                     }
@@ -316,7 +298,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
 
     @Composable
     fun ActionButton(text: String, iconRes: Int, onClick: () -> Unit) {
