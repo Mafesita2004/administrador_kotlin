@@ -211,7 +211,7 @@ class NotificacionesActivity : ComponentActivity() {
                     Image(
                         painter = painterResource(id = R.drawable.menu1),
                         contentDescription = "Menu Icon",
-                        modifier = Modifier.size(45.dp)
+                        modifier = Modifier.size(20.dp)
                     )
                 }
 
